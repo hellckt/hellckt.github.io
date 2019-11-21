@@ -1,0 +1,48 @@
+title: 拾忆
+description: 科特的笔记
+author: hellckt
+github: https://github.com/hellckt
+about: 一个Pyhton程序员，对人工智能有一定了解。
+disqus_shortname: hellckt
+google_analytics: UA-XXXXXXXX-Y
+
+enableTags: true
+tagarray: []
+
+collections:
+  project:
+    output: true
+    permalink: /project/:path/
+
+social:
+    - icon: fa-github
+      link: "https://github.com/hellckt"
+
+#share:
+#  twitter_username: github.io
+#  fb_appid: 1749788565247320
+
+urls:
+    - text: 关于我
+      url: /about/
+    #- text: 我的项目
+    #  url: /projects/
+    - text: XML 订阅
+      url: /feed.xml
+
+url: "https://hellckt.github.io"
+baseurl: ""
+paginate: 20
+per_page: 20
+paginate_path: "/page/:num/"
+markdown: kramdown
+gems:
+  - jekyll-paginate
+  - jekyll-gist
+
+compress_html:
+  clippings: all
+  comments: ["<!-- ", " -->"]
+  endings: all
+  ignore:
+    envs: ['development']
