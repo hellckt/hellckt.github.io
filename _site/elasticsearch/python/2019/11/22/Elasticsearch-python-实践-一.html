@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+    <title>Elasticsearch python 实践（一） - 拾忆</title>
+    <meta name="author" content="hellckt" />
+    <meta name="description" content="Elasticsearch python 实践（一）" />
+    <meta name="keywords" content="Elasticsearch python 实践（一）, 拾忆, elasticsearch, python" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+    <meta content="" property="fb:app_id">
+    <meta content="拾忆" property="og:site_name">
+
+    
+
+    
+      <meta content="Elasticsearch python 实践（一）" property="og:title">
+      <meta content="article" property="og:type">
+    
+
+    
+      <meta content="科特的笔记" property="og:description">
+    
+
+    
+      <meta content="http://localhost:4000/elasticsearch/python/2019/11/22/Elasticsearch-python-%E5%AE%9E%E8%B7%B5-%E4%B8%80.html" property="og:url">
+    
+
+    
+      <meta content="2019-11-22T14:13:10+08:00" property="article:published_time">
+      <meta content="http://localhost:4000/about/" property="article:author">
+    
+
+    
+
+    
+      
+        <meta content="elasticsearch" property="article:section">
+      
+    
+
+    
+      
+    
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@">
+    <meta name="twitter:creator" content="@">
+
+    
+      <meta name="twitter:title" content="Elasticsearch python 实践（一）">
+    
+
+    
+      <meta name="twitter:url" content="http://localhost:4000/elasticsearch/python/2019/11/22/Elasticsearch-python-%E5%AE%9E%E8%B7%B5-%E4%B8%80.html">
+    
+
+    
+      <meta name="twitter:description" content="科特的笔记">
+    
+
+    
+
+    <!-- Font awesome icons -->
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!-- syntax highlighting CSS -->
+    <link rel="stylesheet" href="/static/css/syntax.css">
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300italic,300,400italic,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/super-search.css">
+    <link rel="stylesheet" href="/static/css/thickbox.css">
+    <link rel="stylesheet" href="/static/css/projects.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+
+    
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-3">
+        <div class="fixed-condition">
+          <h1 class="author-name"><a href="/">hellckt</a></h1>
+          
+            <div class="profile-about">
+              一个Pyhton程序员，对人工智能有一定了解。
+            </div>
+          
+          <div class="social">
+            <ul>
+              
+                <li><a href="https://github.com/hellckt" target="_blank"><i class="fa fa-github"></i></a></li>
+              
+            </ul>
+          </div>
+          <div class="search" id="js-search">
+            <input type="text" placeholder="(sitemap)~$ 输入并搜索" class="search__input form-control" id="js-search__input">
+            <ul class="search__results" id="js-search__results"></ul>
+          </div>
+          <hr />
+          <ul class="sidebar-nav">
+            <strong>导航</strong>
+            <li><a href="/">首页</a></li>
+            
+              <li><a class="about" href="/about/">关于我</a></li>
+            
+              <li><a class="about" href="/feed.xml">XML 订阅</a></li>
+            
+          </ul>
+        </div>
+        <!-- end /.fixed-condition -->
+      </div>
+      <div class="col-sm-8 col-offset-1 main-layout">
+        <header class="post-header">
+  <h1 class="post-title">Elasticsearch python 实践（一）</h1>
+</header>
+
+<span class="time">22 Nov 2019</span>
+
+  <span class="categories">
+    &raquo; <a href="/category/elasticsearch">elasticsearch</a>, <a href="/category/python">python</a>
+  </span>
+
+
+<div class="content">
+  <div class="post"><blockquote>
+  <p>最近在做的一个项目中要使用到Elasticsearch(以下简称ES)，在这儿记录一下相关知识点。</p>
+</blockquote>
+
+<h2 id="介绍">介绍</h2>
+
+<p>ES是基于Lucene框架、JAVA语言开发的搜索服务器。它提供了一个具备分布式、多用户功能的全文搜索引擎，同时还提供了一系列RESTful web API接口。由于其稳定、可靠、便捷、开源等优点，在目前其已成为了流行的企业级搜索引擎。</p>
+
+<p>其使用场景有：</p>
+
+<ol>
+  <li>全文检索</li>
+  <li>搜索推荐</li>
+  <li>数据分析，包括：用户行为日志分析、服务器日志分析</li>
+  <li>数据挖掘</li>
+  <li>等等</li>
+</ol>
+
+<h2 id="安装">安装</h2>
+
+<blockquote>
+  <p>由于项目需要的关系，本文仅介绍ES python客户端相关知识点。</p>
+</blockquote>
+
+<h3 id="mac-系统">MAC 系统</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>elasticsearch
+</code></pre></div></div>
+
+<p>如果想选择不同版本的ES，使用下列命令查找不同版本的ES。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew search elasticsearch
+</code></pre></div></div>
+
+<p>安装完毕后，运行ES服务：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew services start elasticsearch
+</code></pre></div></div>
+
+<p>运行成功后，打开浏览器，在地址栏输入:<code class="language-plaintext highlighter-rouge">127.0.0.1:9200</code>进行访问，页面正常显示说明ES服务已经可以正常使用。</p>
+
+<h3 id="安装es-python驱动">安装ES python驱动</h3>
+
+<p>进入python运行环境，使用下列命令进行安装。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip <span class="nb">install </span>elasticsearch
+</code></pre></div></div>
+
+<h2 id="倒排索引">倒排索引</h2>
+
+<p>ES使用了名为<strong>倒排索引</strong>的结构，这种结构适用于快速全文搜索。倒排索引由文档中所有不重复的词列表所构成，其中对每个词来说，至少有一个文档列表包含它。</p>
+
+<h3 id="举例说明">举例说明</h3>
+
+<p>假设一个文档集合中包含四个文档，文档内容下图所示:</p>
+
+<p><img src="/static/img/posts/es_python_shijian_1.png" alt="文档列表" /></p>
+
+<p>则以该文档集合建立的倒排索引如下图所示:</p>
+
+<p><img src="/static/img/posts/es_python_shijian_2.png" alt="文档倒排索引" /></p>
+
+<p>还可以在倒排索引中记录单词在某个文档中出现的位置，如<strong>中国</strong>可表示为：<code class="language-plaintext highlighter-rouge">(1;2;0,5),(2;1;4),(3;1;4)</code>。</p>
+
+<p>倒排索引建立后，搜索引擎就可以方便的进行查询了。比如查询”中国”时，首先搜索系统会查找倒排索引，从中可以得到包含该词的文档集合，该文档集合就是候选搜索结果。然后利用词频等相关信息计算文档和查询的相似性，按照相似性对这些候选结果进行降序排序。</p>
+
+<p>当然，以上过程仅仅是ES搜索过程的简化版本，仅仅是为了直观地解释倒排索引的运行原理。</p>
+
+<h2 id="分词器">分词器</h2>
+
+<p>从上一节，我们可以知道倒排索引中最基础的一个步骤就是对文本进行分词，以下我们开始介绍ES中分词器。</p>
+
+<h3 id="介绍-1">介绍</h3>
+
+<p>ES中的分词器，简单的说就是从一串文本中切分出一系列的词，并对每个词条进行标准化。</p>
+
+<h3 id="结构">结构</h3>
+
+<p>分词器主要包括三个部分：</p>
+
+<ol>
+  <li>character filter：预处理，过滤掉HTML标签、特殊符号转化等；</li>
+  <li>tokenizer：分词</li>
+  <li>token filter：标准化，合并单复数、大小写等。</li>
+</ol>
+
+<h3 id="es内置分词器">ES内置分词器</h3>
+
+<ol>
+  <li>standard分词器（默认）：该分词器会将词汇统一转化为小写形式，并去除停用词及标点符号，对中文采用单字切分，如，”我是中文”，会被切分为：[“我”,”是”, “中”, “文”]；</li>
+  <li>simple分词器：该分词器首先会通过非字母字符来切割文本，然后再将词汇统一转化为小写形式，同时该分词器会去除数字类型的字符；</li>
+  <li>whitespace分词器：功能如其名，仅仅是去除空格，对字符也不小写化，也不对生成的词汇进行标准化处理，不支持中文；</li>
+  <li>language分词器：特定语言的分词器，但并不支持中文。</li>
+</ol>
+
+<h3 id="中文分词器">中文分词器</h3>
+
+<p>由于ES内置的分词器对中文支持度不够，若需处理中文文本，必须自行安装中文分词器。目前大多数项目中使用的中文分词器是：<a href="https://github.com/medcl/elasticsearch-analysis-ik">IK分词器</a>，安装方式请自定查看其文档。</p>
+
+<p>这里说一下安装IK分词器需要注意的地方：</p>
+
+<ol>
+  <li>IK插件版本必须与ES版本对应；</li>
+  <li>若项目面向人群为中文为主，最好修改默认分词器为IK分词器。具体步骤：在ElasticSearch的配置文件config/elasticsearch.yml中的最后一行添加参数 index.analysis.analyzer.default.type: ik;</li>
+  <li>在每次创建索引时，考虑是否有中文分词需求。若有，设置mapping来使用ik分词器。具体步骤：添加 “analyzer”: “ik_max_word”或”analyzer”: “ik_smart”到字段中;</li>
+  <li>IK分词器有两种分词模式：ik_max_word,ik_smart，要根据具体情况选择。</li>
+</ol>
+
+<p>验证IK分词器是否安装成功，访问<a href="http://localhost:9200/_analyze/?analyzer=ik_smart&amp;text=中华人民共和国国歌">该地址</a>即可。</p>
+
+</div>
+  <div class="share-page">
+  <span style="float: left;">Share this on &rarr;&nbsp;&nbsp;</span>
+
+  <!-- Twitter -->
+  <a href="https://twitter.com/share" class="twitter-share-button" data-via="">Tweet</a>
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+
+  <!-- Facebook -->
+  <div class="fb-share-button" data-href="http://localhost:4000/elasticsearch/python/2019/11/22/Elasticsearch-python-%E5%AE%9E%E8%B7%B5-%E4%B8%80.html" data-layout="button_count" style="position: relative; top: -8px; left: 3px;"></div>
+</div>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6&appId=";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+</div>
+
+
+  
+    
+      
+        
+          
+      
+          
+      
+    
+        
+          
+      
+          
+      
+    
+  
+  
+
+<div class="PageNavigation">
+  
+  
+</div>
+
+<div class="disqus-comments">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+    /* <![CDATA[ */
+    var disqus_shortname = "hellckt";
+    var disqus_identifier = "http://localhost:4000_Elasticsearch python 实践（一）";
+    var disqus_title = "Elasticsearch python 实践（一）";
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    /* ]]> */
+  </script>
+</div>
+
+        <footer>
+          &copy; hellckt
+          
+            - <a href="https://github.com/hellckt">https://github.com/hellckt</a> - Powered by Jekyll.
+          
+          <div class="btn-github" style="float:right;">
+            <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=star&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe>
+            <iframe src="https://ghbtns.com/github-btn.html?user=agusmakmun&repo=agusmakmun.github.io&type=fork&count=true" frameborder="0" scrolling="0" width="100" height="20px"></iframe>
+          </div>
+        </footer>
+      </div>
+      <!-- end /.col-sm-8 -->
+    </div>
+    <!-- end /.container -->
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/super-search.js"></script>
+    <script src="/static/js/thickbox-compressed.js"></script>
+    <script src="/static/js/projects.js"></script>
+  </body>
+</html>
+

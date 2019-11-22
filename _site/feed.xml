@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>拾忆</title>
+    <description>科特的笔记</description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 22 Nov 2019 17:20:37 +0800</pubDate>
+    <lastBuildDate>Fri, 22 Nov 2019 17:20:37 +0800</lastBuildDate>
+    <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>Elasticsearch python 实践（一）</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;最近在做的一个项目中要使用到Elasticsearch(以下简称ES)，在这儿记录一下相关知识点。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;介绍&quot;&gt;介绍&lt;/h2&gt;
+
+&lt;p&gt;ES是基于Lucene框架、JAVA语言开发的搜索服务器。它提供了一个具备分布式、多用户功能的全文搜索引擎，同时还提供了一系列RESTful web API接口。由于其稳定、可靠、便捷、开源等优点，在目前其已成为了流行的企业级搜索引擎。&lt;/p&gt;
+
+&lt;p&gt;其使用场景有：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;全文检索&lt;/li&gt;
+  &lt;li&gt;搜索推荐&lt;/li&gt;
+  &lt;li&gt;数据分析，包括：用户行为日志分析、服务器日志分析&lt;/li&gt;
+  &lt;li&gt;数据挖掘&lt;/li&gt;
+  &lt;li&gt;等等&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;安装&quot;&gt;安装&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;由于项目需要的关系，本文仅介绍ES python客户端相关知识点。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;mac-系统&quot;&gt;MAC 系统&lt;/h3&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;elasticsearch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;如果想选择不同版本的ES，使用下列命令查找不同版本的ES。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew search elasticsearch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;安装完毕后，运行ES服务：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew services start elasticsearch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;运行成功后，打开浏览器，在地址栏输入:&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;127.0.0.1:9200&lt;/code&gt;进行访问，页面正常显示说明ES服务已经可以正常使用。&lt;/p&gt;
+
+&lt;h3 id=&quot;安装es-python驱动&quot;&gt;安装ES python驱动&lt;/h3&gt;
+
+&lt;p&gt;进入python运行环境，使用下列命令进行安装。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;elasticsearch
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;倒排索引&quot;&gt;倒排索引&lt;/h2&gt;
+
+&lt;p&gt;ES使用了名为&lt;strong&gt;倒排索引&lt;/strong&gt;的结构，这种结构适用于快速全文搜索。倒排索引由文档中所有不重复的词列表所构成，其中对每个词来说，至少有一个文档列表包含它。&lt;/p&gt;
+
+&lt;h3 id=&quot;举例说明&quot;&gt;举例说明&lt;/h3&gt;
+
+&lt;p&gt;假设一个文档集合中包含四个文档，文档内容下图所示:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/static/img/posts/es_python_shijian_1.png&quot; alt=&quot;文档列表&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;则以该文档集合建立的倒排索引如下图所示:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/static/img/posts/es_python_shijian_2.png&quot; alt=&quot;文档倒排索引&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;还可以在倒排索引中记录单词在某个文档中出现的位置，如&lt;strong&gt;中国&lt;/strong&gt;可表示为：&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;(1;2;0,5),(2;1;4),(3;1;4)&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;倒排索引建立后，搜索引擎就可以方便的进行查询了。比如查询”中国”时，首先搜索系统会查找倒排索引，从中可以得到包含该词的文档集合，该文档集合就是候选搜索结果。然后利用词频等相关信息计算文档和查询的相似性，按照相似性对这些候选结果进行降序排序。&lt;/p&gt;
+
+&lt;p&gt;当然，以上过程仅仅是ES搜索过程的简化版本，仅仅是为了直观地解释倒排索引的运行原理。&lt;/p&gt;
+
+&lt;h2 id=&quot;分词器&quot;&gt;分词器&lt;/h2&gt;
+
+&lt;p&gt;从上一节，我们可以知道倒排索引中最基础的一个步骤就是对文本进行分词，以下我们开始介绍ES中分词器。&lt;/p&gt;
+
+&lt;h3 id=&quot;介绍-1&quot;&gt;介绍&lt;/h3&gt;
+
+&lt;p&gt;ES中的分词器，简单的说就是从一串文本中切分出一系列的词，并对每个词条进行标准化。&lt;/p&gt;
+
+&lt;h3 id=&quot;结构&quot;&gt;结构&lt;/h3&gt;
+
+&lt;p&gt;分词器主要包括三个部分：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;character filter：预处理，过滤掉HTML标签、特殊符号转化等；&lt;/li&gt;
+  &lt;li&gt;tokenizer：分词&lt;/li&gt;
+  &lt;li&gt;token filter：标准化，合并单复数、大小写等。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;es内置分词器&quot;&gt;ES内置分词器&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;standard分词器（默认）：该分词器会将词汇统一转化为小写形式，并去除停用词及标点符号，对中文采用单字切分，如，”我是中文”，会被切分为：[“我”,”是”, “中”, “文”]；&lt;/li&gt;
+  &lt;li&gt;simple分词器：该分词器首先会通过非字母字符来切割文本，然后再将词汇统一转化为小写形式，同时该分词器会去除数字类型的字符；&lt;/li&gt;
+  &lt;li&gt;whitespace分词器：功能如其名，仅仅是去除空格，对字符也不小写化，也不对生成的词汇进行标准化处理，不支持中文；&lt;/li&gt;
+  &lt;li&gt;language分词器：特定语言的分词器，但并不支持中文。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;中文分词器&quot;&gt;中文分词器&lt;/h3&gt;
+
+&lt;p&gt;由于ES内置的分词器对中文支持度不够，若需处理中文文本，必须自行安装中文分词器。目前大多数项目中使用的中文分词器是：&lt;a href=&quot;https://github.com/medcl/elasticsearch-analysis-ik&quot;&gt;IK分词器&lt;/a&gt;，安装方式请自定查看其文档。&lt;/p&gt;
+
+&lt;p&gt;这里说一下安装IK分词器需要注意的地方：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;IK插件版本必须与ES版本对应；&lt;/li&gt;
+  &lt;li&gt;若项目面向人群为中文为主，最好修改默认分词器为IK分词器。具体步骤：在ElasticSearch的配置文件config/elasticsearch.yml中的最后一行添加参数 index.analysis.analyzer.default.type: ik;&lt;/li&gt;
+  &lt;li&gt;在每次创建索引时，考虑是否有中文分词需求。若有，设置mapping来使用ik分词器。具体步骤：添加 “analyzer”: “ik_max_word”或”analyzer”: “ik_smart”到字段中;&lt;/li&gt;
+  &lt;li&gt;IK分词器有两种分词模式：ik_max_word,ik_smart，要根据具体情况选择。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;验证IK分词器是否安装成功，访问&lt;a href=&quot;http://localhost:9200/_analyze/?analyzer=ik_smart&amp;amp;text=中华人民共和国国歌&quot;&gt;该地址&lt;/a&gt;即可。&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 22 Nov 2019 14:13:10 +0800</pubDate>
+        <link>http://localhost:4000/elasticsearch/python/2019/11/22/Elasticsearch-python-%E5%AE%9E%E8%B7%B5-%E4%B8%80.html</link>
+        <guid isPermaLink="true">http://localhost:4000/elasticsearch/python/2019/11/22/Elasticsearch-python-%E5%AE%9E%E8%B7%B5-%E4%B8%80.html</guid>
+        
+        
+        <category>elasticsearch</category>
+        
+        <category>python</category>
+        
+      </item>
+    
+  </channel>
+</rss>

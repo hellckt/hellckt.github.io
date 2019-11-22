@@ -4,7 +4,7 @@ author: hellckt
 github: https://github.com/hellckt
 about: 一个Pyhton程序员，对人工智能有一定了解。
 disqus_shortname: hellckt
-google_analytics: UA-XXXXXXXX-Y
+#google_analytics: UA-XXXXXXXX-Y
 
 enableTags: true
 tagarray: []
@@ -36,7 +36,7 @@ paginate: 20
 per_page: 20
 paginate_path: "/page/:num/"
 markdown: kramdown
-gems:
+plugins:
   - jekyll-paginate
   - jekyll-gist
 
